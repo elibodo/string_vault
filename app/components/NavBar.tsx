@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTheme } from "./ThemeContext";
 import { CiLight } from "react-icons/ci";
+import Image from "next/image";
 
 export default function NavBar() {
   const { toggleTheme, theme } = useTheme(); // Access theme and toggle function from context
@@ -31,9 +32,15 @@ export default function NavBar() {
           </span>
         </button>
       </div>
-      <div className="w-1/3 justify-center hidden md:flex">
-        <Link href={"/"} className="text-3xl">
+      <div className="flex justify-center">
+        {/* Text for larger screens */}
+        <Link href={"/"} className="hidden md:block text-3xl">
           String Vault
+        </Link>
+
+        {/* Image for smaller screens */}
+        <Link href={"/"} className="md:hidden">
+          <Image alt="Logo" src={"/favicon.png"} width={35} height={35} />
         </Link>
       </div>
       <div className="flex space-x-4 md:w-1/3 justify-center">
