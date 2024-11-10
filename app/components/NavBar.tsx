@@ -45,13 +45,22 @@ export default function NavBar() {
       </div>
       <div className="flex space-x-4 md:w-1/3 justify-center">
         {/* Right-side buttons */}
-        <Link href="/" className="">
+        <Link
+          href="/"
+          className="hover:text-gray-500 transition-all ease-in-out duration-150"
+        >
           Home
         </Link>
-        <Link href="/search" className="">
+        <Link
+          href="/search"
+          className="hover:text-gray-500 transition-all ease-in-out duration-150"
+        >
           Search
         </Link>
-        <Link href="/" className="">
+        <Link
+          href="/"
+          className="hover:text-gray-500 transition-all ease-in-out duration-150"
+        >
           Log In
         </Link>
       </div>

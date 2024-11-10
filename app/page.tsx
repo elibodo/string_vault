@@ -1,8 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
+import GuitarModal from "./components/GuitarModal";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState("");
+  const [modalAltText, setModalAltText] = useState("");
+
   const guitarCollection = [
     {
       id: 1,
@@ -22,23 +28,28 @@ export default function Home() {
     },
     {
       id: 3,
-      make: "Ibanez",
-      model: "S1027PBF",
-      madeIn: "Indonesia",
-      year: "2019",
-      imageUrl: "/ibanez_s_7.jpg",
-    },
-    {
-      id: 4,
       make: "Fender",
       model: "Stratocaster",
-      madeIn: "",
-      year: "",
-      imageUrl: "/strats_cat.jpg",
+      madeIn: "Mexico",
+      year: "1993",
+      imageUrl: "/fender2.jpg",
     },
   ];
+
+  const openModal = (imageSrc: string, altText: string) => {
+    setModalImageSrc(imageSrc);
+    setModalAltText(altText);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalImageSrc("");
+    setModalAltText("");
+  };
+
   return (
-    <div className="container mx-auto px-4 pb-8 pt-4">
+    <div className="container mx-auto px-3 pb-16 pt-4">
       <div className="flex flex-col md:flex-row md:space-x-10">
         {/* Left side: Title */}
         <div className="mb-8 md:mb-0">
@@ -48,60 +59,77 @@ export default function Home() {
         </div>
 
         {/* Right side: Description */}
-        <div className="space-y-4 text-lg">
+        <div className="space-y-8 text-lg">
           <p>
-            A website I created to keep pictures of all my guitars in one place.
+            A website I built to organize and showcase pictures of my entire
+            guitar collection, as well as other people&apos;s collections.
           </p>
-          <p>Here&apos;s some of my collection</p>
+          <p className="text-base">
+            Click the &apos;Search&apos; button at the top of the page to see
+            more gear. You can search by brand, model, or country of origin
+            using the search bar, or filter your results with the drop-down
+            selectors.
+          </p>
+          <p className="text-base">
+            Sign up with your Google account to effortlessly upload pictures of
+            your gear, track serial numbers, and view your entire collection on
+            your profile.
+          </p>
+
+          <p className="text-base">
+            Here are some pieces from my collection. Click them to view a larger
+            image.
+          </p>
 
           {/* Gallery Section */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
             {guitarCollection.map((guitar) => (
               <div key={guitar.id} className="flex flex-col items-center">
                 {/* Image Container */}
-                <div className="relative w-full h-[270px] cursor-pointer rounded-t-xl overflow-hidden hover:scale-105 transition-transform ease-in-out duration-200">
+                <div
+                  className="relative w-full h-[270px] cursor-pointer rounded-t-xl overflow-hidden hover:scale-105 transition-transform ease-in-out duration-200"
+                  onClick={() =>
+                    openModal(guitar.imageUrl, `${guitar.make} ${guitar.model}`)
+                  }
+                >
                   <Image
-                    src={guitar.imageUrl} // Dynamically set the image based on the object
+                    src={guitar.imageUrl}
                     alt={`${guitar.make} ${guitar.model}`}
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 {/* Description Container */}
                 <div className="w-full border border-t-0 border-gray-500 rounded-b-xl p-4 shadow-md overflow-clip">
-                  <div className="flex flex-row justify-between">
-                    <h2 className="text-base md:text-lg font-semibold">
+                  <div className="flex flex-row justify-between items-center">
+                    <h2 className="text-base lg:text-lg font-semibold">
                       {guitar.make}
                     </h2>
-                    <p className="text-gray-500 text-sm md:text-lg">
+                    <p className="text-gray-500 text-sm lg:text-base">
                       {guitar.year}
                     </p>
                   </div>
 
-                  <p className="text-gray-500 text-sm md:text-lg">
+                  <p className="text-gray-500 text-sm lg:text-base">
                     {guitar.model}
                   </p>
-                  <p className="text-gray-500 text-sm md:text-lg">
+                  <p className="text-gray-500 text-sm lg:text-base">
                     {guitar.madeIn}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-
-          <p>
-            Using your Google account to sign up, you can upload pictures of
-            your gear, track serial numbers, and input model and brand
-            information from your profile.
-          </p>
-          <p>
-            Press the &apos;Search&apos; button at the top of the page to view
-            your gear as well as others. You can search for models, brands, and
-            types (electric / acoustic / extended range) using the search bar or
-            filter by these options with the drop-down selectors.
-          </p>
         </div>
       </div>
+
+      {/* Modal Component */}
+      <GuitarModal
+        isOpen={isModalOpen}
+        imageSrc={modalImageSrc}
+        altText={modalAltText}
+        onClose={closeModal}
+      />
     </div>
   );
 }
