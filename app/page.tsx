@@ -34,6 +34,14 @@ export default function Home() {
       year: "1993",
       imageUrl: "/fender2.jpg",
     },
+    {
+      id: 4,
+      make: "Ibanez",
+      model: "S1027PBF",
+      madeIn: "Indonesia",
+      year: "2019",
+      imageUrl: "/ibanez_s_7.jpg",
+    },
   ];
 
   const openModal = (imageSrc: string, altText: string) => {
@@ -71,9 +79,9 @@ export default function Home() {
             selectors.
           </p>
           <p className="text-base">
-            Sign up with your Google account to effortlessly upload pictures of
-            your gear, track serial numbers, and view your entire collection on
-            your profile.
+            Sign up to upload pictures of your gear, track serial numbers, keep
+            track of how much you paid, have a record of the guitars that you
+            own, and view your entire collection on your profile.
           </p>
 
           <p className="text-base">
