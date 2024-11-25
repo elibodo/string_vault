@@ -3,6 +3,7 @@ import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/NavBar";
 import { ThemeProvider } from "./components/ThemeContext";
+import { SessionProvider } from "next-auth/react";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -26,10 +27,12 @@ export default function RootLayout({
       </head>
       <body className={`${robotoMono.className} antialiased`}>
         <main>
-          <ThemeProvider>
-            <NavBar />
-            {children}
-          </ThemeProvider>
+          <SessionProvider>
+            <ThemeProvider>
+              <NavBar />
+              {children}
+            </ThemeProvider>
+          </SessionProvider>
         </main>
       </body>
     </html>

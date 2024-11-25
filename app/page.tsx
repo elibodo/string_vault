@@ -58,16 +58,16 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-3 pb-16 pt-4">
-      <div className="flex flex-col md:flex-row md:space-x-10">
+      <div className="flex flex-col lg:flex-row lg:space-x-10">
         {/* Left side: Title */}
-        <div className="mb-8 md:mb-0">
+        <div className="mb-8 lg:mb-0">
           <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
             String Vault
           </h1>
         </div>
 
         {/* Right side: Description */}
-        <div className="space-y-8 text-lg">
+        <div className="space-y-8 text-base">
           <p>
             A website I built to organize and showcase pictures of my entire
             guitar collection, as well as other people&apos;s collections.
@@ -90,7 +90,7 @@ export default function Home() {
           </p>
 
           {/* Gallery Section */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {guitarCollection.map((guitar) => (
               <div key={guitar.id} className="flex flex-col items-center">
                 {/* Image Container */}

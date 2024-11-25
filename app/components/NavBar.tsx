@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useTheme } from "./ThemeContext";
 import { CiLight } from "react-icons/ci";
 import Image from "next/image";
+import { signIn, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export default function NavBar() {
-  const { toggleTheme, theme } = useTheme(); // Access theme and toggle function from context
-
+  const { toggleTheme, theme } = useTheme();
+  const { data: session } = useSession();
   return (
     <nav className="pt-1 px-3 pb-3 flex justify-between items-center border-b-2 mb-5">
       <div className="flex space-x-4 md:w-1/3 justify-center">
@@ -57,12 +59,21 @@ export default function NavBar() {
         >
           Search
         </Link>
-        <Link
-          href="/"
-          className="hover:text-gray-500 transition-all ease-in-out duration-150"
-        >
-          Log In
-        </Link>
+        {session?.user ? (
+          <button
+            onClick={() => signOut()}
+            className="hover:text-gray-500 transition-all ease-in-out duration-150"
+          >
+            Sign Out
+          </button>
+        ) : (
+          <button
+            onClick={() => signIn("google")}
+            className="hover:text-gray-500 transition-all ease-in-out duration-150"
+          >
+            Log In
+          </button>
+        )}
       </div>
     </nav>
   );
