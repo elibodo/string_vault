@@ -47,32 +47,49 @@ export default function NavBar() {
       </div>
       <div className="flex space-x-4 md:w-1/3 justify-center">
         {/* Right-side buttons */}
-        <Link
-          href="/"
-          className="hover:text-gray-500 transition-all ease-in-out duration-150"
-        >
-          Home
-        </Link>
-        <Link
-          href="/search"
-          className="hover:text-gray-500 transition-all ease-in-out duration-150"
-        >
-          Search
-        </Link>
+
         {session?.user ? (
-          <button
-            onClick={() => signOut()}
-            className="hover:text-gray-500 transition-all ease-in-out duration-150"
-          >
-            Sign Out
-          </button>
+          <>
+            <Link
+              href="/profile"
+              className="relative hover:text-gray-500 transition-all ease-in-out duration-150 before:absolute before:bottom-[-4px] before:left-0 before:h-[2px] before:w-0 before:bg-gray-500 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full"
+            >
+              Profile
+            </Link>
+            <Link
+              href="/search"
+              className="relative hover:text-gray-500 transition-all ease-in-out duration-150 before:absolute before:bottom-[-4px] before:left-0 before:h-[2px] before:w-0 before:bg-gray-500 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full"
+            >
+              Search
+            </Link>
+            <button
+              onClick={() => signOut()}
+              className="relative hover:text-gray-500 transition-all ease-in-out duration-150 before:absolute before:bottom-[-4px] before:left-0 before:h-[2px] before:w-0 before:bg-gray-500 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full"
+            >
+              Sign Out
+            </button>
+          </>
         ) : (
-          <button
-            onClick={() => signIn("google")}
-            className="hover:text-gray-500 transition-all ease-in-out duration-150"
-          >
-            Log In
-          </button>
+          <>
+            <Link
+              href="/"
+              className="hover:text-gray-500 transition-all ease-in-out duration-150"
+            >
+              Home
+            </Link>
+            <Link
+              href="/search"
+              className="hover:text-gray-500 transition-all ease-in-out duration-150"
+            >
+              Search
+            </Link>
+            <button
+              onClick={() => signIn("google")}
+              className="hover:text-gray-500 transition-all ease-in-out duration-150"
+            >
+              Log In
+            </button>
+          </>
         )}
       </div>
     </nav>
