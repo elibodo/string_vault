@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useTheme } from "./ThemeContext";
 import { CiLight } from "react-icons/ci";
 import Image from "next/image";
-import { signIn, signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
 export default function NavBar() {
   const { toggleTheme, theme } = useTheme();
   const { data: session } = useSession();
+
   return (
     <nav className="pt-1 px-3 pb-3 flex justify-between items-center border-b-2 mb-5">
       <div className="flex space-x-4 md:w-1/3 justify-center">
@@ -62,10 +62,7 @@ export default function NavBar() {
             >
               Search
             </Link>
-            <button
-              onClick={() => signOut()}
-              className="relative hover:text-gray-500 transition-all ease-in-out duration-150 before:absolute before:bottom-[-4px] before:left-0 before:h-[2px] before:w-0 before:bg-gray-500 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full"
-            >
+            <button className="relative hover:text-gray-500 transition-all ease-in-out duration-150 before:absolute before:bottom-[-4px] before:left-0 before:h-[2px] before:w-0 before:bg-gray-500 before:transition-all before:duration-300 before:ease-in-out hover:before:w-full">
               Sign Out
             </button>
           </>
@@ -83,10 +80,7 @@ export default function NavBar() {
             >
               Search
             </Link>
-            <button
-              onClick={() => signIn("google")}
-              className="hover:text-gray-500 transition-all ease-in-out duration-150"
-            >
+            <button className="hover:text-gray-500 transition-all ease-in-out duration-150">
               Log In
             </button>
           </>
