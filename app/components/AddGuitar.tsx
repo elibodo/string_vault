@@ -10,6 +10,8 @@ const AddGuitar = () => {
   const [year, setYear] = useState("");
   const [cost, setCost] = useState("");
   const [value, setValue] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
+  const [serviceDate, setServiceDate] = useState("");
   const [serialNumber, setSerialNumber] = useState("");
   return (
     <form className="p-2 max-w-2xl mx-auto">
@@ -174,6 +176,40 @@ const AddGuitar = () => {
             value={serialNumber}
             placeholder="SN345678"
             onChange={(e) => setSerialNumber(e.target.value)}
+            className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400"
+          />
+        </div>
+
+        {/* purchase date */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="purchaseDate"
+            className="text-sm font-medium mb-1 dark:text-white text-black"
+          >
+            Purchase Date
+          </label>
+          <input
+            id="purchaseDate"
+            type="date"
+            value={purchaseDate}
+            onChange={(e) => setPurchaseDate(e.target.value)}
+            className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400"
+          />
+        </div>
+
+        {/* service date */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="serviceDate"
+            className="text-sm font-medium mb-1 dark:text-white text-black"
+          >
+            Service Date
+          </label>
+          <input
+            id="serviceDate"
+            type="date"
+            value={serviceDate}
+            onChange={(e) => setServiceDate(e.target.value)}
             className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400"
           />
         </div>

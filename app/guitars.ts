@@ -8,7 +8,9 @@ export const guitars = [
     madeIn: "Japan",
     cost: 900,
     value: 1100,
-    serialNumber: "SN1",
+    serialNumber: "SN1827564",
+    purchaseDate: "10/5/24",
+    serviceDate: "10/5/24",
     imageUrl: "/fender.jpg",
   },
   {
@@ -20,7 +22,9 @@ export const guitars = [
     madeIn: "Japan",
     cost: 1600,
     value: 1800,
-    serialNumber: "SN2",
+    serialNumber: "SN2742532",
+    purchaseDate: "9/5/22",
+    serviceDate: "10/12/24",
     imageUrl: "/ibanez_az.jpg",
   },
   {
@@ -32,7 +36,9 @@ export const guitars = [
     subModel: "",
     cost: 400,
     value: 400,
-    serialNumber: "SN3",
+    serialNumber: "SN3028463",
+    purchaseDate: "12/25/22",
+    serviceDate: "9/15/24",
     imageUrl: "/fender2.jpg",
   },
   {
@@ -44,7 +50,9 @@ export const guitars = [
     madeIn: "Indonesia",
     cost: 1100,
     value: 1200,
-    serialNumber: "SN4",
+    serialNumber: "SN4137546",
+    purchaseDate: "6/25/22",
+    serviceDate: "8/5/23",
     imageUrl: "/ibanez_s_7.jpg",
   },
 ];
