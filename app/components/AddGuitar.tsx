@@ -47,7 +47,7 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       ></div>
 
       {/* Modal */}
-      <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto p-6 rounded-lg bg-white dark:bg-gray-800">
+      <div className="relative max-h-[95vh] w-full max-w-2xl overflow-y-auto p-6 rounded-lg bg-white dark:bg-gray-800">
         {/* Close Button */}
         <div className="space-y-4 mx-2">
           <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">

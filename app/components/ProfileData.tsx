@@ -4,18 +4,9 @@ import React from "react";
 import { guitars } from "../guitars";
 import { useState } from "react";
 import AddGuitar from "./AddGuitar";
+import { useAuth } from "@/hooks/useAuth";
 
 const ProfileData = () => {
-  const name = "Eli Bodovinitz";
-  const email = "ebodovinitz@gmail.com";
-  const totalGuitars = guitars.length;
-  const totalCost = guitars.reduce((sum, guitar) => sum + guitar.cost, 0);
-  const totalValue = guitars.reduce((sum, guitar) => sum + guitar.value, 0);
-  const averageCost = totalCost / totalGuitars;
-  const brands = new Set(guitars.map((guitar) => guitar.brand)).size;
-  const models = new Set(guitars.map((guitar) => guitar.model)).size;
-  const country = new Set(guitars.map((guitar) => guitar.madeIn)).size;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -25,6 +16,19 @@ const ProfileData = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const { session } = useAuth();
+
+  const name = session?.user?.user_metadata?.full_name;
+  const email = session?.user?.email;
+  const totalGuitars = guitars.length;
+  const totalCost = guitars.reduce((sum, guitar) => sum + guitar.cost, 0);
+  const totalValue = guitars.reduce((sum, guitar) => sum + guitar.value, 0);
+  const averageCost = totalCost / totalGuitars;
+  const brands = new Set(guitars.map((guitar) => guitar.brand)).size;
+  const models = new Set(guitars.map((guitar) => guitar.model)).size;
+  const country = new Set(guitars.map((guitar) => guitar.madeIn)).size;
+
   return (
     <>
       <div className="flex justify-between">
