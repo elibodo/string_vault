@@ -1,8 +1,71 @@
+"use client";
+
 import React from "react";
 import GuitarCard from "./GuitarCard";
-import { guitars } from "../app/guitars";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/hooks/useAuth";
+import { UUID } from "crypto";
+
+interface Guitar {
+  id: string;
+  brand: string;
+  model: string;
+  subModel: string;
+  year: number;
+  madeIn: string;
+  cost: number;
+  value: number;
+  serialNumber: string;
+  purchaseDate: string;
+  serviceDate: string;
+  imageUrl: UUID;
+  user_id: string;
+}
 
 const ProfileGuitarData = () => {
+  const [guitars, setGuitars] = useState<Guitar[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const { session } = useAuth();
+
+  // Fetch guitars for the current user
+  useEffect(() => {
+    const fetchGuitars = async () => {
+      setLoading(true);
+      try {
+        const user = session?.user; // Get the current authenticated user
+        if (user) {
+          // Query guitars associated with the user
+          const { data, error } = await supabase
+            .from("guitars") // Assuming your table is called "guitars"
+            .select("*")
+            .eq("user_id", user.id); // Assuming you have a user_id column in the "guitars" table
+
+          if (error) {
+            throw error;
+          }
+
+          setGuitars(data || []);
+        }
+      } catch (error) {
+        setError("Failed to load guitars");
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGuitars();
+  }, [session]);
+
+  if (loading) {
+    return <p>Loading guitars...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
   return (
     <>
       <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
@@ -56,7 +119,7 @@ const ProfileGuitarData = () => {
       </div>
       <div className="pt-4 grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
         {guitars.map((guitar) => (
-          <GuitarCard key={guitar.serialNumber} guitar={guitar} />
+          <GuitarCard key={guitar.id} guitar={guitar} />
         ))}
       </div>
     </>
