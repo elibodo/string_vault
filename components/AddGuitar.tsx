@@ -71,6 +71,10 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       }
       const imageUrl = data.publicUrl;
 
+      console.log("Image URL:", imageUrl);
+
+      console.log("User ID:", session?.user?.id);
+
       console.log("Payload to be inserted:", {
         brand,
         model,
