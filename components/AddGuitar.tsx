@@ -70,6 +70,22 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         );
       }
       const imageUrl = data.publicUrl;
+
+      console.log("Payload to be inserted:", {
+        brand,
+        model,
+        sub_model: subModel,
+        made_in: madeIn,
+        year,
+        cost: parseFloat(cost),
+        value: parseFloat(value),
+        purchase_date: purchaseDate,
+        service_date: serviceDate,
+        serial_number: serialNumber,
+        image_url: imageUrl,
+        user_id: session?.user?.id,
+      });
+
       const { error: dbError } = await supabase.from("guitars").insert([
         {
           brand,
@@ -111,9 +127,7 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         setError(err.message);
       } else {
         setError(
-          typeof err === "string"
-            ? err
-            : "An unexpected error occurred. Check logs for details."
+          typeof err === "string" ? err : "An unexpected error occurred."
         );
       }
     } finally {
