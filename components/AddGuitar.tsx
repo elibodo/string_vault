@@ -4,6 +4,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/useAuth";
+import imageCompression from "browser-image-compression";
 
 type ModalProps = {
   isOpen: boolean;
@@ -38,6 +39,14 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Optimize image
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,11 +60,19 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     }
 
     try {
-      const fileExt = image.name.split(".").pop();
+      const options = {
+        maxSizeMB: 0.5, // Set maximum size of the image in MB (adjust as needed)
+        maxWidthOrHeight: 750, // Resize the image to this size while maintaining aspect ratio
+        useWebWorker: true, // Enable web worker for compression if supported by browser
+      };
+
+      const compressedImage = await imageCompression(image, options);
+
+      const fileExt = compressedImage.name.split(".").pop();
       const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from("guitar-images")
-        .upload(fileName, image);
+        .upload(fileName, compressedImage);
 
       if (uploadError) {
         throw new Error("Image upload failed.");
@@ -350,7 +367,8 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 <input
                   id="imageFile"
                   type="file"
-                  onChange={(e) => setImage(e.target.files?.[0] || null)}
+                  accept="images/*"
+                  onChange={handleImageChange}
                   required
                   className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400 cursor-pointer"
                 />
