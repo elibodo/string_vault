@@ -61,8 +61,8 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
     try {
       const options = {
-        maxSizeMB: 0.5, // Set maximum size of the image in MB (adjust as needed)
-        maxWidthOrHeight: 750, // Resize the image to this size while maintaining aspect ratio
+        maxSizeMB: 1, // Set maximum size of the image in MB (adjust as needed)
+        maxWidthOrHeight: 1000, // Resize the image to this size while maintaining aspect ratio
         useWebWorker: true, // Enable web worker for compression if supported by browser
       };
 
