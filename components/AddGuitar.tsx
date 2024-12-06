@@ -2,6 +2,8 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/hooks/useAuth";
 
 type ModalProps = {
   isOpen: boolean;
@@ -9,16 +11,19 @@ type ModalProps = {
 };
 
 const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  // Modal logic //
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
     } else {
-      setTimeout(() => setIsVisible(false), 300); // Matches the duration of the transition
+      setTimeout(() => setIsVisible(false), 300);
     }
   }, [isOpen]);
 
+  const { session } = useAuth();
+
+  // Data for adding a new guitar
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [subModel, setSubModel] = useState("");
@@ -29,7 +34,94 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [purchaseDate, setPurchaseDate] = useState("");
   const [serviceDate, setServiceDate] = useState("");
   const [serialNumber, setSerialNumber] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    if (!image) {
+      setError("Please upload an image.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const fileExt = image.name.split(".").pop();
+      const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from("guitar-images")
+        .upload(fileName, image);
+
+      if (uploadError) {
+        throw new Error("Image upload failed.");
+      }
+      const { data } = supabase.storage
+        .from("guitar-images")
+        .getPublicUrl(fileName);
+
+      if (!data || !data.publicUrl) {
+        throw new Error(
+          "Failed to retrieve the public URL for the uploaded image."
+        );
+      }
+      const imageUrl = data.publicUrl;
+      const { error: dbError } = await supabase.from("guitars").insert([
+        {
+          brand,
+          model,
+          submodel: subModel,
+          madein: madeIn,
+          year,
+          cost: parseFloat(cost),
+          value: parseFloat(value),
+          purchasedate: purchaseDate,
+          servicedate: serviceDate,
+          serialnumber: serialNumber,
+          image_url: imageUrl,
+          user_id: session?.user?.id,
+        },
+      ]);
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw dbError;
+      }
+      setBrand("");
+      setModel("");
+      setSubModel("");
+      setMadeIn("");
+      setYear("");
+      setCost("");
+      setValue("");
+      setPurchaseDate("");
+      setServiceDate("");
+      setSerialNumber("");
+      setImage(null);
+      onClose();
+
+      alert("Guitar added successfully!");
+    } catch (err) {
+      console.error("Caught error:", err);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError(
+          typeof err === "string"
+            ? err
+            : "An unexpected error occurred. Check logs for details."
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Modal logic //
   if (!isVisible) return null;
 
   return (
@@ -53,25 +145,7 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
             Add Guitar
           </h1>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log({
-                brand,
-                model,
-                subModel,
-                madeIn,
-                year,
-                cost,
-                value,
-                purchaseDate,
-                serviceDate,
-                serialNumber,
-              });
-              onClose();
-            }}
-            className="p-2 max-w-2xl mx-auto"
-          >
+          <form onSubmit={handleSubmit} className="p-2 max-w-2xl mx-auto">
             <div className="flex flex-col col-span-2 gap-4 pb-8 text-sm">
               <p>
                 The brand, model, sub model, year, made in, and image will be
@@ -277,13 +351,13 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 <input
                   id="imageFile"
                   type="file"
-                  accept="image/*"
+                  onChange={(e) => setImage(e.target.files?.[0] || null)}
                   required
                   className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400 cursor-pointer"
                 />
               </div>
             </div>
-            {/* Submit Button */}
+            {/* Submit and cancel Button */}
             <div className="col-span-2 gap-5 flex justify-center mt-6">
               <button
                 onClick={onClose}
@@ -293,11 +367,13 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               </button>
               <button
                 type="submit"
+                disabled={loading}
                 className="transition-all duration-300 ease-in-out border-2 rounded-md py-1 px-2 text-lg dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-300 dark:hover:text-gray-800 bg-gray-200 text-black border-gray-400 hover:bg-gray-800 hover:text-white"
               >
-                Add Guitar
+                {loading ? "Uploading..." : "Add Guitar"}
               </button>
             </div>
+            {error && <p className="text-red-500 text-center mt-3">{error}</p>}
           </form>
         </div>
       </div>
