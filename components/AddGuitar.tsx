@@ -192,13 +192,13 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               {/* sub model */}
               <div className="flex flex-col">
                 <label
-                  htmlFor="model"
+                  htmlFor="submodel"
                   className="text-sm font-medium mb-1 dark:text-white text-black"
                 >
                   Sub Model
                 </label>
                 <input
-                  id="model"
+                  id="submodel"
                   type="text"
                   value={subModel}
                   placeholder="Player Series, 50's Standard, etc."
