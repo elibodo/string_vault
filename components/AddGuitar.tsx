@@ -71,37 +71,18 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       }
       const imageUrl = data.publicUrl;
 
-      console.log("Image URL:", imageUrl);
-
-      console.log("User ID:", session?.user?.id);
-
-      console.log("Payload to be inserted:", {
-        brand,
-        model,
-        sub_model: subModel,
-        made_in: madeIn,
-        year,
-        cost: parseFloat(cost),
-        value: parseFloat(value),
-        purchase_date: purchaseDate,
-        service_date: serviceDate,
-        serial_number: serialNumber,
-        image_url: imageUrl,
-        user_id: session?.user?.id,
-      });
-
       const { error: dbError } = await supabase.from("guitars").insert([
         {
           brand,
           model,
-          submodel: subModel,
+          submodel: subModel ? subModel : null,
           madein: madeIn,
           year,
-          cost: parseFloat(cost),
-          value: parseFloat(value),
-          purchasedate: purchaseDate,
-          servicedate: serviceDate,
-          serialnumber: serialNumber,
+          cost: parseFloat(cost) ? parseFloat(cost) : null,
+          value: parseFloat(value) ? parseFloat(value) : null,
+          purchasedate: purchaseDate ? purchaseDate : null,
+          servicedate: serviceDate ? serviceDate : null,
+          serialnumber: serialNumber ? serialNumber : null,
           image_url: imageUrl,
           user_id: session?.user?.id,
         },
