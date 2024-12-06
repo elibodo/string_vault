@@ -1,6 +1,6 @@
 import React from "react";
-import GuitarCard from "../components/GuitarCard";
-import { guitars } from "../guitars";
+import GuitarCard from "./GuitarCard";
+import { guitars } from "../app/guitars";
 
 const ProfileGuitarData = () => {
   return (

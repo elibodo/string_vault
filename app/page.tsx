@@ -1,5 +1,5 @@
 import { guitars } from "./guitars";
-import GuitarCard from "./components/GuitarCard";
+import GuitarCard from "../components/GuitarCard";
 
 export default function Home() {
   return (

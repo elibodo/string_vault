@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { guitars } from "../guitars";
+import { guitars } from "../app/guitars";
 import { useState } from "react";
 import AddGuitar from "./AddGuitar";
 import { useAuth } from "@/hooks/useAuth";

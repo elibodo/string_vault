@@ -1,9 +1,9 @@
 import React from "react";
-import Filter from "../components/Filter";
-import GuitarCard from "../components/GuitarCard";
+import Filter from "../../components/Filter";
+import GuitarCard from "../../components/GuitarCard";
 import { guitars } from "../guitars";
 
-const page = () => {
+const SearchPage = () => {
   return (
     <div className="container mx-auto px-3 pb-16 pt-4">
       <div className="flex flex-col lg:flex-row lg:space-x-10">
@@ -22,4 +22,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SearchPage;
