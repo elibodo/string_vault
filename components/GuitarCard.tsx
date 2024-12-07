@@ -10,13 +10,16 @@ type Props = {
     id: string;
     brand: string;
     model: string;
-    subModel: string;
+    submodel: string;
     year: number;
-    madeIn: string;
+    madein: string;
     cost: number;
     value: number;
-    serialNumber: string;
-    imageUrl: string;
+    serialnumber: string;
+    purchasedate: string;
+    servicedate: string;
+    image_url: string;
+    user_id: string;
   };
 };
 
@@ -43,11 +46,11 @@ const GuitarCard = ({ guitar }: Props) => {
         <div
           className="relative w-full h-[270px] cursor-pointer rounded-t-xl overflow-hidden hover:scale-105 transition-transform ease-in-out duration-200"
           onClick={() =>
-            openModal(guitar.imageUrl, `${guitar.brand} ${guitar.model}`)
+            openModal(guitar.image_url, `${guitar.brand} ${guitar.model}`)
           }
         >
           <Image
-            src={guitar.imageUrl}
+            src={guitar.image_url}
             alt={`${guitar.brand} ${guitar.model}`}
             fill
             style={{ objectFit: "cover" }}
@@ -64,9 +67,9 @@ const GuitarCard = ({ guitar }: Props) => {
 
           <p className="text-gray-500 text-sm lg:text-base">{guitar.model}</p>
           <p className="text-gray-500 text-sm lg:text-base">
-            {guitar.subModel}
+            {guitar.submodel}
           </p>
-          <p className="text-gray-500 text-sm lg:text-base">{guitar.madeIn}</p>
+          <p className="text-gray-500 text-sm lg:text-base">{guitar.madein}</p>
         </div>
       </div>
       <GuitarModal

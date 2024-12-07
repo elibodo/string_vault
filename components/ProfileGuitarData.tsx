@@ -5,21 +5,20 @@ import GuitarCard from "./GuitarCard";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/useAuth";
-import { UUID } from "crypto";
 
 interface Guitar {
   id: string;
   brand: string;
   model: string;
-  subModel: string;
+  submodel: string;
   year: number;
-  madeIn: string;
+  madein: string;
   cost: number;
   value: number;
-  serialNumber: string;
-  purchaseDate: string;
-  serviceDate: string;
-  imageUrl: UUID;
+  serialnumber: string;
+  purchasedate: string;
+  servicedate: string;
+  image_url: string;
   user_id: string;
 }
 
@@ -34,14 +33,12 @@ const ProfileGuitarData = () => {
     const fetchGuitars = async () => {
       setLoading(true);
       try {
-        const user = session?.user; // Get the current authenticated user
+        const user = session?.user?.id;
         if (user) {
-          // Query guitars associated with the user
           const { data, error } = await supabase
-            .from("guitars") // Assuming your table is called "guitars"
+            .from("guitars")
             .select("*")
-            .eq("user_id", user.id); // Assuming you have a user_id column in the "guitars" table
-
+            .eq("user_id", user);
           if (error) {
             throw error;
           }
@@ -91,19 +88,39 @@ const ProfileGuitarData = () => {
           <tbody>
             {guitars.map((guitar) => (
               <tr
-                key={guitar.serialNumber}
+                key={guitar.id}
                 className="odd:bg-white even:bg-gray-50 hover:bg-gray-100 dark:odd:bg-gray-800 dark:even:bg-gray-900 dark:hover:bg-gray-700 "
               >
-                <td className="border px-3 py-2">{guitar.brand}</td>
-                <td className="border px-3 py-2">{guitar.model}</td>
-                <td className="border px-3 py-2">{guitar.subModel}</td>
-                <td className="border px-3 py-2">{guitar.year}</td>
-                <td className="border px-3 py-2">{guitar.madeIn}</td>
-                <td className="border px-3 py-2">${guitar.cost}</td>
-                <td className="border px-3 py-2">${guitar.value}</td>
-                <td className="border px-3 py-2">{guitar.serialNumber}</td>
-                <td className="border px-3 py-2">{guitar.purchaseDate}</td>
-                <td className="border px-3 py-2">{guitar.serviceDate}</td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.brand}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.model}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.submodel}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.year}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.madein}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  ${guitar.cost}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  ${guitar.value}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.serialnumber}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.purchasedate}
+                </td>
+                <td className="border px-3 py-2 whitespace-nowrap">
+                  {guitar.servicedate}
+                </td>
                 <td className="border px-3 py-2 text-center whitespace-nowrap">
                   <button className="hover:underline hover:font-bold mr-4">
                     Edit
