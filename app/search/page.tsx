@@ -14,7 +14,7 @@ const SearchPage = () => {
         {/* Gallery Section */}
         <div className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {guitars.map((guitar) => (
-            <GuitarCard key={guitar.serialNumber} guitar={guitar} />
+            <GuitarCard key={guitar.id} guitar={guitar} />
           ))}
         </div>
       </div>

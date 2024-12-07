@@ -27,7 +27,7 @@ const ProfileData = () => {
   const averageCost = totalCost / totalGuitars;
   const brands = new Set(guitars.map((guitar) => guitar.brand)).size;
   const models = new Set(guitars.map((guitar) => guitar.model)).size;
-  const country = new Set(guitars.map((guitar) => guitar.madeIn)).size;
+  const country = new Set(guitars.map((guitar) => guitar.madein)).size;
 
   return (
     <>

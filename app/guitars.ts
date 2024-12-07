@@ -1,6 +1,6 @@
 export const guitars = [
   {
-    id: 1,
+    id: "1",
     brand: "Fender",
     model: "Stratocaster",
     submodel: "ST-62DT",
@@ -12,9 +12,10 @@ export const guitars = [
     purchasedate: "10/5/24",
     servicedate: "10/5/24",
     image_url: "/fender.jpg",
+    user_id: "1",
   },
   {
-    id: 2,
+    id: "2",
     brand: "Ibanez",
     model: "AZ",
     submodel: "AZ2402",
@@ -26,9 +27,10 @@ export const guitars = [
     purchasedate: "9/5/22",
     servicedate: "10/12/24",
     image_url: "/ibanez_az.jpg",
+    user_id: "1",
   },
   {
-    id: 3,
+    id: "3",
     brand: "Fender",
     model: "Stratocaster",
     year: 1994,
@@ -40,9 +42,10 @@ export const guitars = [
     purchasedate: "12/25/22",
     servicedate: "9/15/24",
     image_url: "/fender2.jpg",
+    user_id: "1",
   },
   {
-    id: 4,
+    id: "4",
     brand: "Ibanez",
     model: "S",
     submodel: "S1027PBF",
@@ -54,5 +57,6 @@ export const guitars = [
     purchasedate: "6/25/22",
     servicedate: "8/5/23",
     image_url: "/ibanez_s_7.jpg",
+    user_id: "1",
   },
 ];
