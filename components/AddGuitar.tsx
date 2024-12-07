@@ -367,7 +367,8 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 <input
                   id="imageFile"
                   type="file"
-                  accept="images/*"
+                  accept="image/*"
+                  capture="environment"
                   onChange={handleImageChange}
                   required
                   className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400 cursor-pointer"
