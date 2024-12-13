@@ -1,7 +1,6 @@
 import React from "react";
-import Filter from "../../components/Filter";
-import GuitarCard from "../../components/GuitarCard";
-import { guitars } from "../guitars";
+import Filter from "@/components/Filter";
+import Feed from "@/components/Feed";
 
 const SearchPage = () => {
   return (
@@ -12,11 +11,7 @@ const SearchPage = () => {
           <Filter />
         </div>
         {/* Gallery Section */}
-        <div className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {guitars.map((guitar) => (
-            <GuitarCard key={guitar.id} guitar={guitar} />
-          ))}
-        </div>
+        <Feed />
       </div>
     </div>
   );

@@ -82,7 +82,7 @@ const Filter = () => {
   console.log(brands, models, country);
 
   return (
-    <div className="space-y-4">
+    <form className="space-y-4">
       <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
         Search Guitars
       </h1>
@@ -94,7 +94,10 @@ const Filter = () => {
             className="transition-all duration-300 ease-in-out flex-grow border-2 py-2 px-3 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400"
             placeholder="Search..."
           />
-          <button className="transition-all duration-300 ease-in-out border-2 rounded-md p-1 text-3xl dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-300 dark:hover:text-gray-800 bg-gray-200 text-black border-gray-400 hover:bg-gray-800 hover:text-white">
+          <button
+            type="submit"
+            className="transition-all duration-300 ease-in-out border-2 rounded-md p-1 text-3xl dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-300 dark:hover:text-gray-800 bg-gray-200 text-black border-gray-400 hover:bg-gray-800 hover:text-white"
+          >
             <IoIosSearch />
           </button>
         </div>
@@ -206,7 +209,7 @@ const Filter = () => {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

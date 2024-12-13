@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/lib/supabaseClient"; // Adjust the import to where your Supabase client is initialized
+import { supabase } from "@/lib/supabaseClient";
 import AddGuitar from "./AddGuitar";
 
 interface Guitar {
@@ -27,7 +27,7 @@ const ProfileData = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { session } = useAuth(); // User session from custom hook
+  const { session } = useAuth();
 
   useEffect(() => {
     const fetchGuitars = async () => {
@@ -35,7 +35,6 @@ const ProfileData = () => {
       try {
         const user = session?.user?.id;
         if (user) {
-          // Fetch guitars for the logged-in user from the Supabase database
           const { data, error } = await supabase
             .from("guitars")
             .select("*")
@@ -52,8 +51,6 @@ const ProfileData = () => {
         setLoading(false);
       }
     };
-
-    // Fetch guitars when the session is available
     if (session) {
       fetchGuitars();
     }
