@@ -1,33 +1,91 @@
 "use client";
 
-import React from "react";
-import { guitars } from "../app/guitars";
-import { useState } from "react";
-import AddGuitar from "./AddGuitar";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabaseClient"; // Adjust the import to where your Supabase client is initialized
+import AddGuitar from "./AddGuitar";
+
+interface Guitar {
+  id: string;
+  brand: string;
+  model: string;
+  submodel: string;
+  year: number;
+  madein: string;
+  cost: number;
+  value: number;
+  serialnumber: string;
+  purchasedate: string;
+  servicedate: string;
+  image_url: string;
+  user_id: string;
+}
 
 const ProfileData = () => {
+  const [guitars, setGuitars] = useState<Guitar[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const { session } = useAuth(); // User session from custom hook
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  useEffect(() => {
+    const fetchGuitars = async () => {
+      setLoading(true);
+      try {
+        const user = session?.user?.id;
+        if (user) {
+          // Fetch guitars for the logged-in user from the Supabase database
+          const { data, error } = await supabase
+            .from("guitars")
+            .select("*")
+            .eq("user_id", user);
+          if (error) {
+            throw error;
+          }
+          setGuitars(data || []);
+        }
+      } catch (error) {
+        setError("Failed to load guitars");
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const { session } = useAuth();
+    // Fetch guitars when the session is available
+    if (session) {
+      fetchGuitars();
+    }
+  }, [session]);
 
-  const name = session?.user?.user_metadata?.full_name;
-  const email = session?.user?.email;
+  // Calculate stats based on the fetched guitars data
   const totalGuitars = guitars.length;
-  const totalCost = guitars.reduce((sum, guitar) => sum + guitar.cost, 0);
-  const totalValue = guitars.reduce((sum, guitar) => sum + guitar.value, 0);
-  const averageCost = totalCost / totalGuitars;
+  const totalCost = guitars.reduce(
+    (sum, guitar) => sum + (guitar.cost || 0),
+    0
+  );
+  const totalValue = guitars.reduce(
+    (sum, guitar) => sum + (guitar.value || 0),
+    0
+  );
   const brands = new Set(guitars.map((guitar) => guitar.brand)).size;
   const models = new Set(guitars.map((guitar) => guitar.model)).size;
   const country = new Set(guitars.map((guitar) => guitar.madein)).size;
+
+  const name = session?.user?.user_metadata?.full_name;
+  const email = session?.user?.email;
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  if (loading) {
+    return <p>Loading guitars...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div className="space-y-4">
@@ -36,8 +94,8 @@ const ProfileData = () => {
           Profile
         </h1>
         <div
-          onClick={() => openModal()}
-          className=" cursor-pointer transition-all duration-300 ease-in-out border-2 rounded-md py-1 px-2 text-lg dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-300 dark:hover:text-gray-800 bg-gray-200 text-black border-gray-400 hover:bg-gray-800 hover:text-white"
+          onClick={openModal}
+          className="cursor-pointer transition-all duration-300 ease-in-out border-2 rounded-md py-1 px-2 text-lg dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-300 dark:hover:text-gray-800 bg-gray-200 text-black border-gray-400 hover:bg-gray-800 hover:text-white"
         >
           Add Guitar
         </div>
@@ -60,7 +118,6 @@ const ProfileData = () => {
           <div className="overflow-hidden">
             <p>Guitars: {totalGuitars}</p>
             <p>Total Cost: ${totalCost}</p>
-            <p>Avergage Cost: ${averageCost}</p>
             <p>Total Value: ${totalValue}</p>
           </div>
         </div>
