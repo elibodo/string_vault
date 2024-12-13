@@ -22,7 +22,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="space-y-4 mx-2">
+    <div className="mx-2">
       <ProfileData />
       <ProfileGuitarData />
     </div>

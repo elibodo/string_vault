@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import GuitarCard from "./GuitarCard";
-import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/useAuth";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import AddGuitar from "./AddGuitar";
 
 interface Guitar {
   id: string;
@@ -27,6 +28,25 @@ const ProfileGuitarData = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { session } = useAuth();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [guitarToDelete, setGuitarToDelete] = useState<{
+    guitarId: string;
+    imageUrl: string;
+  } | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [guitarToEdit, setGuitarToEdit] = useState<Guitar | null>(null);
+
+  // Function to open the modal and set the guitar data
+  const handleOpenEditModal = (guitar: Guitar) => {
+    setGuitarToEdit(guitar); // Set the full guitar object
+    setIsEditModalOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+    setGuitarToEdit(null);
+  };
 
   // Fetch guitars for the current user
   useEffect(() => {
@@ -56,6 +76,59 @@ const ProfileGuitarData = () => {
     fetchGuitars();
   }, [session]);
 
+  // Delete guitar function
+  const handleDelete = async (guitarId: string, imageUrl: string) => {
+    try {
+      // Delete the record from the database
+      const { error: deleteError } = await supabase
+        .from("guitars")
+        .delete()
+        .eq("id", guitarId);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      // Extract the file path from the image URL
+      const bucketName = "guitar-images"; // Replace with your actual bucket name
+      const filePath = imageUrl.replace(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/`,
+        ""
+      );
+
+      // Delete the image from the storage bucket
+      const { error: storageError } = await supabase.storage
+        .from(bucketName)
+        .remove([filePath]);
+
+      if (storageError) {
+        console.error(
+          "Error deleting the image from storage:",
+          storageError.message
+        );
+      }
+
+      // Update state to reflect deletion
+      setGuitars((prevGuitars) =>
+        prevGuitars.filter((guitar) => guitar.id !== guitarId)
+      );
+    } catch (error) {
+      console.error("Error deleting guitar:", error);
+    }
+  };
+
+  const handleOpenDeleteModal = (guitarId: string, imageUrl: string) => {
+    setGuitarToDelete({ guitarId, imageUrl });
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (guitarToDelete) {
+      handleDelete(guitarToDelete.guitarId, guitarToDelete.imageUrl);
+      setIsDeleteModalOpen(false); // Close the modal after confirming
+    }
+  };
+
   if (loading) {
     return <p>Loading guitars...</p>;
   }
@@ -63,12 +136,13 @@ const ProfileGuitarData = () => {
   if (error) {
     return <p>{error}</p>;
   }
+
   return (
-    <>
+    <div className="py-4">
       <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
         Guitars
       </h1>
-      <div className="overflow-x-auto rounded-md border">
+      <div className="overflow-x-auto rounded-md border mt-4">
         <table className="min-w-full border-collapse border text-sm">
           <thead className="bg-gray-500 ">
             <tr className="whitespace-nowrap">
@@ -121,11 +195,27 @@ const ProfileGuitarData = () => {
                 <td className="border px-3 py-2 whitespace-nowrap">
                   {guitar.servicedate}
                 </td>
-                <td className="border px-3 py-2 text-center whitespace-nowrap">
-                  <button className="hover:underline hover:font-bold mr-4">
+                <td className="border px-2 py-2 text-center whitespace-nowrap space-x-3">
+                  <button
+                    onClick={() => handleOpenEditModal(guitar)}
+                    className="relative hover:font-bold transition-all ease-in-out duration-150 
+                              before:absolute before:bottom-[-2px] before:left-0 
+                              before:h-[2px] before:w-0 before:bg-gray-500 
+                              before:transition-all before:duration-300 before:ease-in-out 
+                              hover:before:w-full"
+                  >
                     Edit
                   </button>
-                  <button className="hover:underline hover:font-bold">
+                  <button
+                    onClick={() =>
+                      handleOpenDeleteModal(guitar.id, guitar.image_url)
+                    }
+                    className="relative hover:font-bold transition-all ease-in-out duration-150 
+                              before:absolute before:bottom-[-2px] before:left-0 
+                              before:h-[2px] before:w-0 before:bg-gray-500 
+                              before:transition-all before:duration-300 before:ease-in-out 
+                              hover:before:w-full"
+                  >
                     Delete
                   </button>
                 </td>
@@ -139,7 +229,21 @@ const ProfileGuitarData = () => {
           <GuitarCard key={guitar.id} guitar={guitar} />
         ))}
       </div>
-    </>
+      {isEditModalOpen && guitarToEdit && (
+        <AddGuitar
+          isOpen={isEditModalOpen}
+          onClose={handleCloseModal}
+          guitar={guitarToEdit}
+        />
+      )}
+      {isDeleteModalOpen && guitarToDelete && (
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
+    </div>
   );
 };
 

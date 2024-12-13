@@ -6,14 +6,33 @@ import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/useAuth";
 import imageCompression from "browser-image-compression";
 
+type Guitar = {
+  id: string;
+  brand: string;
+  model: string;
+  submodel?: string | null;
+  madein: string;
+  year: number;
+  cost: number | null;
+  value: number | null;
+  purchasedate?: string | null;
+  servicedate?: string | null;
+  serialnumber?: string | null;
+  image_url: string;
+  user_id: string;
+};
+
 type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  guitar?: Guitar;
 };
 
-const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
   // Modal logic //
   const [isVisible, setIsVisible] = useState(false);
+  const { session } = useAuth();
+
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
@@ -22,24 +41,21 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const { session } = useAuth();
-
   // Data for adding a new guitar
-  const [brand, setBrand] = useState("");
-  const [model, setModel] = useState("");
-  const [subModel, setSubModel] = useState("");
-  const [madeIn, setMadeIn] = useState("");
-  const [year, setYear] = useState("");
-  const [cost, setCost] = useState("");
-  const [value, setValue] = useState("");
-  const [purchaseDate, setPurchaseDate] = useState("");
-  const [serviceDate, setServiceDate] = useState("");
-  const [serialNumber, setSerialNumber] = useState("");
+  const [brand, setBrand] = useState(guitar?.brand || "");
+  const [model, setModel] = useState(guitar?.model || "");
+  const [subModel, setSubModel] = useState(guitar?.submodel || "");
+  const [madeIn, setMadeIn] = useState(guitar?.madein || "");
+  const [year, setYear] = useState(guitar?.year || "");
+  const [cost, setCost] = useState(guitar?.cost?.toString() || "");
+  const [value, setValue] = useState(guitar?.value?.toString() || "");
+  const [purchaseDate, setPurchaseDate] = useState(guitar?.purchasedate || "");
+  const [serviceDate, setServiceDate] = useState(guitar?.servicedate || "");
+  const [serialNumber, setSerialNumber] = useState(guitar?.serialnumber || "");
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Optimize image
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -53,62 +69,81 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     setLoading(true);
     setError(null);
 
-    if (!image) {
+    if (!image && !guitar) {
       setError("Please upload an image.");
       setLoading(false);
       return;
     }
 
     try {
-      const options = {
-        maxSizeMB: 1, // Set maximum size of the image in MB (adjust as needed)
-        maxWidthOrHeight: 1000, // Resize the image to this size while maintaining aspect ratio
-        useWebWorker: true, // Enable web worker for compression if supported by browser
+      let imageUrl = guitar?.image_url;
+
+      // Image upload logic (only if there's a new image)
+      if (image) {
+        const options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1000,
+          useWebWorker: true,
+        };
+
+        const compressedImage = await imageCompression(image, options);
+
+        const fileExt = compressedImage.name.split(".").pop();
+        const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from("guitar-images")
+          .upload(fileName, compressedImage);
+
+        if (uploadError) {
+          throw new Error("Image upload failed.");
+        }
+        const { data } = supabase.storage
+          .from("guitar-images")
+          .getPublicUrl(fileName);
+
+        if (!data || !data.publicUrl) {
+          throw new Error(
+            "Failed to retrieve the public URL for the uploaded image."
+          );
+        }
+
+        imageUrl = data.publicUrl;
+      }
+
+      const guitarData = {
+        brand,
+        model,
+        submodel: subModel || null,
+        madein: madeIn,
+        year,
+        cost: parseFloat(cost) || null,
+        value: parseFloat(value) || null,
+        purchasedate: purchaseDate || null,
+        servicedate: serviceDate || null,
+        serialnumber: serialNumber || null,
+        image_url: imageUrl,
+        user_id: session?.user?.id,
       };
 
-      const compressedImage = await imageCompression(image, options);
-
-      const fileExt = compressedImage.name.split(".").pop();
-      const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
-        .from("guitar-images")
-        .upload(fileName, compressedImage);
-
-      if (uploadError) {
-        throw new Error("Image upload failed.");
+      let dbError;
+      if (guitar) {
+        // Edit an existing guitar
+        const { error } = await supabase
+          .from("guitars")
+          .update(guitarData)
+          .eq("id", guitar.id);
+        dbError = error;
+      } else {
+        // Add a new guitar
+        const { error } = await supabase.from("guitars").insert([guitarData]);
+        dbError = error;
       }
-      const { data } = supabase.storage
-        .from("guitar-images")
-        .getPublicUrl(fileName);
-
-      if (!data || !data.publicUrl) {
-        throw new Error(
-          "Failed to retrieve the public URL for the uploaded image."
-        );
-      }
-      const imageUrl = data.publicUrl;
-
-      const { error: dbError } = await supabase.from("guitars").insert([
-        {
-          brand,
-          model,
-          submodel: subModel ? subModel : null,
-          madein: madeIn,
-          year,
-          cost: parseFloat(cost) ? parseFloat(cost) : null,
-          value: parseFloat(value) ? parseFloat(value) : null,
-          purchasedate: purchaseDate ? purchaseDate : null,
-          servicedate: serviceDate ? serviceDate : null,
-          serialnumber: serialNumber ? serialNumber : null,
-          image_url: imageUrl,
-          user_id: session?.user?.id,
-        },
-      ]);
 
       if (dbError) {
         console.error("Database error:", dbError);
         throw dbError;
       }
+
       setBrand("");
       setModel("");
       setSubModel("");
@@ -121,16 +156,12 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       setSerialNumber("");
       setImage(null);
       onClose();
-
-      alert("Guitar added successfully!");
     } catch (err) {
       console.error("Caught error:", err);
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError(
-          typeof err === "string" ? err : "An unexpected error occurred."
-        );
+        setError("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
@@ -159,7 +190,7 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         {/* Close Button */}
         <div className="space-y-4 mx-2">
           <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
-            Add Guitar
+            {guitar ? "Edit Guitar" : "Add Guitar"}
           </h1>
           <form onSubmit={handleSubmit} className="p-2 max-w-2xl mx-auto">
             <div className="flex flex-col col-span-2 gap-4 pb-8 text-sm">
@@ -357,22 +388,26 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Image File */}
-              <div className="flex flex-col">
-                <label
-                  htmlFor="imageFile"
-                  className="text-sm font-medium mb-1 dark:text-white text-black"
-                >
-                  Image (required)
-                </label>
-                <input
-                  id="imageFile"
-                  type="file"
-                  accept="images/*"
-                  onChange={handleImageChange}
-                  required
-                  className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400 cursor-pointer"
-                />
-              </div>
+              {guitar ? (
+                <></>
+              ) : (
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="imageFile"
+                    className="text-sm font-medium mb-1 dark:text-white text-black"
+                  >
+                    Image (required)
+                  </label>
+                  <input
+                    id="imageFile"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    required
+                    className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400 cursor-pointer"
+                  />
+                </div>
+              )}
             </div>
             {/* Submit and cancel Button */}
             <div className="col-span-2 gap-5 flex justify-center mt-6">
@@ -387,7 +422,9 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 disabled={loading}
                 className="transition-all duration-300 ease-in-out border-2 rounded-md py-1 px-2 text-lg dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-300 dark:hover:text-gray-800 bg-gray-200 text-black border-gray-400 hover:bg-gray-800 hover:text-white"
               >
-                {loading ? "Uploading..." : "Add Guitar"}
+                {loading
+                  ? "Saving..."
+                  : `${guitar ? "Update Guitar" : "Add Guitar"}`}
               </button>
             </div>
             {error && <p className="text-red-500 text-center mt-3">{error}</p>}

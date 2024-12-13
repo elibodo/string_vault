@@ -5,6 +5,46 @@ import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosSearch } from "react-icons/io";
 
+const brandsList = [
+  "Fender",
+  "Gibson",
+  "PRS",
+  "Ibanez",
+  "Epiphone",
+  "Martin",
+  "Yamaha",
+  "Taylor",
+  "Jackson",
+  "ESP",
+  "Squier",
+  "Schecter",
+  "Gretsch",
+];
+
+const modelsList = [
+  "Stratocaster",
+  "Les Paul",
+  "Telecaster",
+  "SG",
+  "Flying V",
+  "Explorer",
+  "Jazzmaster",
+  "Jaguar",
+  "Firebird",
+  "Mustang",
+];
+
+const countriesList = [
+  "USA",
+  "Japan",
+  "Mexico",
+  "South Korea",
+  "Indonesia",
+  "China",
+  "Canada",
+  "Italy",
+];
+
 const Filter = () => {
   const [expandBrand, setExpandBrand] = useState(false);
   const [expandModel, setExpandModel] = useState(false);
@@ -80,123 +120,17 @@ const Filter = () => {
               }`}
             >
               <div className="pl-5 pr-2 pb-3 text-sm space-y-1">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Fender"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Fender</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Gibson"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Gibson</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"PRS"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>PRS</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Ibanez"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Ibanez</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Epiphone"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Epiphone</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Martin"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Martin</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Yamaha"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Yamaha</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Taylor"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Taylor</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Jackson"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Jackson</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"ESP"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>ESP</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Squier"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Squier</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Schecter"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Schecter</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Gretsch"}
-                    onChange={(e) => handleBrandCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Gretsch</span>
-                </label>
+                {brandsList.map((brand) => (
+                  <label key={brand} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      value={brand}
+                      onChange={(e) => handleBrandCheckbox(e.target.value)}
+                      className="h-4 w-4"
+                    />
+                    <span>{brand}</span>
+                  </label>
+                ))}
               </div>
             </div>
           </div>
@@ -221,96 +155,17 @@ const Filter = () => {
               }`}
             >
               <div className="pl-5 pr-2 pb-3 text-sm space-y-1">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Stratocaster"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Stratocaster</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Les Paul"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Les Paul</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Telecaster"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Telecaster</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"SG"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>SG</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Flying V"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Flying V</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Explorer"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Explorer</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Jazzmaster"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Jazzmaster</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Jaguar"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Jaguar</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Firebird"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Firebird</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Mustang"}
-                    onChange={(e) => handleModelCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Mustang</span>
-                </label>
+                {modelsList.map((model) => (
+                  <label key={model} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      value={model}
+                      onChange={(e) => handleModelCheckbox(e.target.value)}
+                      className="h-4 w-4"
+                    />
+                    <span>{model}</span>
+                  </label>
+                ))}
               </div>
             </div>
           </div>
@@ -335,78 +190,17 @@ const Filter = () => {
               }`}
             >
               <div className="pl-5 pr-2 pb-3 text-sm space-y-1">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"USA"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>USA</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Japan"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Japan</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Mexico"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Mexico</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"South Korea"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>South Korea</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Indonesia"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Indonesia</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"China"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>China</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Canada"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Canada</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    value={"Italy"}
-                    onChange={(e) => handleCountryCheckbox(e.target.value)}
-                    className="h-4 w-4"
-                  />
-                  <span>Italy</span>
-                </label>
+                {countriesList.map((country) => (
+                  <label key={country} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      value={country}
+                      onChange={(e) => handleCountryCheckbox(e.target.value)}
+                      className="h-4 w-4"
+                    />
+                    <span>{country}</span>
+                  </label>
+                ))}
               </div>
             </div>
           </div>

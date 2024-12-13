@@ -30,7 +30,7 @@ const ProfileData = () => {
   const country = new Set(guitars.map((guitar) => guitar.madein)).size;
 
   return (
-    <>
+    <div className="space-y-4">
       <div className="flex justify-between">
         <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
           Profile
@@ -76,7 +76,7 @@ const ProfileData = () => {
         </div>
       </div>
       <AddGuitar isOpen={isModalOpen} onClose={closeModal} />
-    </>
+    </div>
   );
 };
 
