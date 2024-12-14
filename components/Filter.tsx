@@ -1,9 +1,7 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
-import { IoIosArrowDown } from "react-icons/io";
-import { IoIosSearch } from "react-icons/io";
+import React, { useState } from "react";
+import { IoIosArrowDown, IoIosSearch } from "react-icons/io";
 
 const brandsList = [
   "Fender",
@@ -20,7 +18,6 @@ const brandsList = [
   "Schecter",
   "Gretsch",
 ];
-
 const modelsList = [
   "Stratocaster",
   "Les Paul",
@@ -33,7 +30,6 @@ const modelsList = [
   "Firebird",
   "Mustang",
 ];
-
 const countriesList = [
   "USA",
   "Japan",
@@ -45,57 +41,60 @@ const countriesList = [
   "Italy",
 ];
 
-const Filter = () => {
+interface FilterProps {
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  setBrands: React.Dispatch<React.SetStateAction<string[]>>;
+  setModels: React.Dispatch<React.SetStateAction<string[]>>;
+  setCountries: React.Dispatch<React.SetStateAction<string[]>>;
+}
+const Filter: React.FC<FilterProps> = ({
+  setSearchQuery,
+  setBrands,
+  setModels,
+  setCountries,
+}) => {
   const [expandBrand, setExpandBrand] = useState(false);
   const [expandModel, setExpandModel] = useState(false);
   const [expandCountry, setExpandCountry] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState("");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
 
-  const [brands, setBrands] = useState<string[]>([]);
-  const [models, setModels] = useState<string[]>([]);
-  const [country, setCountry] = useState<string[]>([]);
-
-  const handleBrandCheckbox = (brand: string) => {
-    setBrands((prev) => {
-      if (prev.includes(brand)) {
-        return prev.filter((item) => item !== brand);
+  const handleCheckboxChange = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setter((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((item) => item !== value);
+      } else {
+        return [...prev, value];
       }
-      return [...prev, brand];
-    });
-  };
-  const handleModelCheckbox = (brand: string) => {
-    setModels((prev) => {
-      if (prev.includes(brand)) {
-        return prev.filter((item) => item !== brand);
-      }
-      return [...prev, brand];
-    });
-  };
-  const handleCountryCheckbox = (brand: string) => {
-    setCountry((prev) => {
-      if (prev.includes(brand)) {
-        return prev.filter((item) => item !== brand);
-      }
-      return [...prev, brand];
     });
   };
 
-  console.log(brands, models, country);
-
+  const handleApplyFilters = () => {
+    setBrands(selectedBrands);
+    setModels(selectedModels);
+    setCountries(selectedCountries);
+    setSearchQuery(selectedQuery);
+  };
   return (
-    <form className="space-y-4">
+    <div className="space-y-4">
       <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
         Search Guitars
       </h1>
       <div className="space-y-2 w-full">
-        {/* Text search */}
         <div className="flex space-x-2">
           <input
             type="text"
+            onChange={(e) => setSelectedQuery(e.target.value)}
             className="transition-all duration-300 ease-in-out flex-grow border-2 py-2 px-3 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400"
             placeholder="Search..."
           />
           <button
-            type="submit"
+            onClick={handleApplyFilters}
             className="transition-all duration-300 ease-in-out border-2 rounded-md p-1 text-3xl dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-300 dark:hover:text-gray-800 bg-gray-200 text-black border-gray-400 hover:bg-gray-800 hover:text-white"
           >
             <IoIosSearch />
@@ -128,7 +127,9 @@ const Filter = () => {
                     <input
                       type="checkbox"
                       value={brand}
-                      onChange={(e) => handleBrandCheckbox(e.target.value)}
+                      onChange={() =>
+                        handleCheckboxChange(brand, setSelectedBrands)
+                      }
                       className="h-4 w-4"
                     />
                     <span>{brand}</span>
@@ -163,7 +164,9 @@ const Filter = () => {
                     <input
                       type="checkbox"
                       value={model}
-                      onChange={(e) => handleModelCheckbox(e.target.value)}
+                      onChange={() =>
+                        handleCheckboxChange(model, setSelectedModels)
+                      }
                       className="h-4 w-4"
                     />
                     <span>{model}</span>
@@ -198,7 +201,9 @@ const Filter = () => {
                     <input
                       type="checkbox"
                       value={country}
-                      onChange={(e) => handleCountryCheckbox(e.target.value)}
+                      onChange={() =>
+                        handleCheckboxChange(country, setSelectedCountries)
+                      }
                       className="h-4 w-4"
                     />
                     <span>{country}</span>
@@ -209,7 +214,7 @@ const Filter = () => {
           </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 
