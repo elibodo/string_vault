@@ -4,7 +4,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/useAuth";
-import imageCompression from "browser-image-compression";
 
 type Guitar = {
   id: string;
@@ -56,13 +55,6 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (file) {
-      setImage(file);
-    }
-  };
-
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,39 +68,33 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
     }
 
     try {
-      let imageUrl = guitar?.image_url;
-
       // Image upload logic (only if there's a new image)
-      if (image) {
-        const options = {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 1000,
-          useWebWorker: true,
-        };
-
-        const compressedImage = await imageCompression(image, options);
-
-        const fileExt = compressedImage.name.split(".").pop();
-        const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage
-          .from("guitar-images")
-          .upload(fileName, compressedImage);
-
-        if (uploadError) {
-          throw new Error("Image upload failed.");
-        }
-        const { data } = supabase.storage
-          .from("guitar-images")
-          .getPublicUrl(fileName);
-
-        if (!data || !data.publicUrl) {
-          throw new Error(
-            "Failed to retrieve the public URL for the uploaded image."
-          );
-        }
-
-        imageUrl = data.publicUrl;
+      if (!image) {
+        setError("Please upload an image.");
+        setLoading(false);
+        return;
       }
+
+      const fileExt = image.name.split(".").pop();
+      const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from("guitar-images")
+        .upload(fileName, image);
+
+      if (uploadError) {
+        throw new Error("Image upload failed.");
+      }
+      const { data } = supabase.storage
+        .from("guitar-images")
+        .getPublicUrl(fileName);
+
+      if (!data || !data.publicUrl) {
+        throw new Error(
+          "Failed to retrieve the public URL for the uploaded image."
+        );
+      }
+
+      const imageUrl = data.publicUrl;
 
       const guitarData = {
         brand,
@@ -402,7 +388,7 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
                     id="imageFile"
                     type="file"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={(e) => setImage(e.target.files?.[0] || null)}
                     required
                     className="text-sm transition-all duration-300 ease-in-out flex-grow border-2 py-1 px-2 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-gray-200 text-black border-gray-400 cursor-pointer"
                   />
