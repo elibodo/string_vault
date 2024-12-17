@@ -61,52 +61,45 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
     setLoading(true);
     setError(null);
 
-    if (!image && !guitar) {
-      setError("Please upload an image.");
-      setLoading(false);
-      return;
-    }
+    let imageUrl = guitar?.image_url;
 
     try {
-      // Image upload logic (only if there's a new image)
-      if (!image) {
-        setError("Please upload an image.");
-        setLoading(false);
-        return;
+      // Upload new image only if a new file is selected
+      if (image) {
+        const fileExt = image.name.split(".").pop();
+        const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from("guitar-images")
+          .upload(fileName, image);
+
+        if (uploadError) {
+          throw new Error("Image upload failed.");
+        }
+
+        const { data } = supabase.storage
+          .from("guitar-images")
+          .getPublicUrl(fileName);
+
+        if (!data || !data.publicUrl) {
+          throw new Error(
+            "Failed to retrieve the public URL for the uploaded image."
+          );
+        }
+
+        imageUrl = data.publicUrl; // Update image URL with the newly uploaded image
       }
-
-      const fileExt = image.name.split(".").pop();
-      const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
-        .from("guitar-images")
-        .upload(fileName, image);
-
-      if (uploadError) {
-        throw new Error("Image upload failed.");
-      }
-      const { data } = supabase.storage
-        .from("guitar-images")
-        .getPublicUrl(fileName);
-
-      if (!data || !data.publicUrl) {
-        throw new Error(
-          "Failed to retrieve the public URL for the uploaded image."
-        );
-      }
-
-      const imageUrl = data.publicUrl;
 
       const guitarData = {
-        brand,
-        model,
-        submodel: subModel || null,
-        madein: madeIn,
-        year,
+        brand: brand.trim(),
+        model: model.trim(),
+        submodel: subModel.trim() || null,
+        madein: madeIn.trim(),
+        year: year,
         cost: parseFloat(cost) || null,
         value: parseFloat(value) || null,
         purchasedate: purchaseDate || null,
         servicedate: serviceDate || null,
-        serialnumber: serialNumber || null,
+        serialnumber: serialNumber.trim() || null,
         image_url: imageUrl,
         user_id: session?.user?.id,
       };
@@ -126,10 +119,10 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
       }
 
       if (dbError) {
-        console.error("Database error:", dbError);
-        throw dbError;
+        throw new Error("Failed to save the guitar data.");
       }
 
+      // Reset form and close modal
       setBrand("");
       setModel("");
       setSubModel("");
@@ -143,7 +136,6 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
       setImage(null);
       onClose();
     } catch (err) {
-      console.error("Caught error:", err);
       if (err instanceof Error) {
         setError(err.message);
       } else {
