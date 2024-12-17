@@ -85,12 +85,19 @@ const Feed: React.FC<FeedProps> = ({
   }
 
   return (
-    <div className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-      {guitars.map((guitar) => (
-        <GuitarCard key={guitar.id} guitar={guitar} />
-      ))}
-      {guitars.length === 0 ? <>Please expand search to view guitars</> : <></>}
-    </div>
+    <>
+      {guitars.length === 0 ? (
+        <div className="flex justify-center w-full text-xl mt-10">
+          Please expand search to view guitars
+        </div>
+      ) : (
+        <div className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          {guitars.map((guitar) => (
+            <GuitarCard key={guitar.id} guitar={guitar} />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
