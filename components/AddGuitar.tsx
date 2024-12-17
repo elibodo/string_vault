@@ -57,7 +57,7 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0] || null;
     if (file) {
       setImage(file);
     }
