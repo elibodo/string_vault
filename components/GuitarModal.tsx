@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
@@ -16,6 +18,7 @@ const GuitarModal: React.FC<ModalProps> = ({
   onClose,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isOpen) {
@@ -49,13 +52,19 @@ const GuitarModal: React.FC<ModalProps> = ({
         </button>
         {/* Conditionally render Image component if imageSrc is not empty */}
         {imageSrc && (
-          <Image
-            src={imageSrc}
-            alt={altText}
-            width={500}
-            height={500}
-            className="rounded-lg"
-          />
+          <>
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-500 animate-pulse"></div>
+            )}
+            <Image
+              src={imageSrc}
+              alt={altText}
+              width={500}
+              height={500}
+              className="rounded-lg"
+              onLoad={() => setIsLoading(false)}
+            />
+          </>
         )}
       </div>
     </div>

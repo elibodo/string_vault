@@ -28,6 +28,8 @@ const GuitarCard = ({ guitar }: Props) => {
   const [modalImageSrc, setModalImageSrc] = useState("");
   const [modalAltText, setModalAltText] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const openModal = (imageSrc: string, altText: string) => {
     setModalImageSrc(imageSrc);
     setModalAltText(altText);
@@ -49,11 +51,15 @@ const GuitarCard = ({ guitar }: Props) => {
             openModal(guitar.image_url, `${guitar.brand} ${guitar.model}`)
           }
         >
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-500 animate-pulse"></div>
+          )}
           <Image
             src={guitar.image_url}
             alt={`${guitar.brand} ${guitar.model}`}
             fill
             style={{ objectFit: "cover" }}
+            onLoad={() => setIsLoading(false)}
           />
         </div>
         {/* Description Container */}
