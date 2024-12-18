@@ -6,7 +6,7 @@ import { ThemeProvider } from "../components/ThemeContext";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
-  weight: ["400", "700"], // Use weights as per your design
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {

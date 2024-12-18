@@ -24,11 +24,10 @@ const GuitarModal: React.FC<ModalProps> = ({
     if (isOpen) {
       setIsVisible(true);
     } else {
-      setTimeout(() => setIsVisible(false), 300); // Matches the duration of the transition
+      setTimeout(() => setIsVisible(false), 300);
     }
   }, [isOpen]);
 
-  // Check if imageSrc is a valid string (not empty or null)
   if (!isVisible || !imageSrc) return null;
 
   return (
@@ -42,7 +41,7 @@ const GuitarModal: React.FC<ModalProps> = ({
         className={`relative rounded-lg transition-transform transform ${
           isOpen ? "scale-100" : "scale-90"
         }`}
-        onClick={(e) => e.stopPropagation()} // Prevent click from closing modal when clicking the image
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           className="absolute top-2 right-2 text-white opacity-50 bg-gray-800 hover:opacity-100 transition-opacity ease-in-out rounded-full p-2"
@@ -50,7 +49,6 @@ const GuitarModal: React.FC<ModalProps> = ({
         >
           <IoClose className="text-3xl" />
         </button>
-        {/* Conditionally render Image component if imageSrc is not empty */}
         {imageSrc && (
           <>
             {isLoading && (

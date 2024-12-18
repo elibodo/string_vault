@@ -28,7 +28,6 @@ type ModalProps = {
 };
 
 const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
-  // Modal logic //
   const [isVisible, setIsVisible] = useState(false);
   const { session } = useAuth();
 
@@ -40,7 +39,6 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
     }
   }, [isOpen]);
 
-  // Data for adding a new guitar
   const [brand, setBrand] = useState(guitar?.brand || "");
   const [model, setModel] = useState(guitar?.model || "");
   const [subModel, setSubModel] = useState(guitar?.submodel || "");
@@ -55,7 +53,6 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -64,7 +61,6 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
     let imageUrl = guitar?.image_url;
 
     try {
-      // Upload new image only if a new file is selected
       if (image) {
         const fileExt = image.name.split(".").pop();
         const fileName = `${session?.user?.id}-${Date.now()}.${fileExt}`;
@@ -86,7 +82,7 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
           );
         }
 
-        imageUrl = data.publicUrl; // Update image URL with the newly uploaded image
+        imageUrl = data.publicUrl;
       }
 
       const guitarData = {
@@ -106,14 +102,12 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
 
       let dbError;
       if (guitar) {
-        // Edit an existing guitar
         const { error } = await supabase
           .from("guitars")
           .update(guitarData)
           .eq("id", guitar.id);
         dbError = error;
       } else {
-        // Add a new guitar
         const { error } = await supabase.from("guitars").insert([guitarData]);
         dbError = error;
       }
@@ -122,7 +116,6 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
         throw new Error("Failed to save the guitar data.");
       }
 
-      // Reset form and close modal
       setBrand("");
       setModel("");
       setSubModel("");
@@ -146,7 +139,6 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
     }
   };
 
-  // Modal logic //
   if (!isVisible) return null;
 
   return (
@@ -157,15 +149,12 @@ const AddGuitar: React.FC<ModalProps> = ({ isOpen, onClose, guitar }) => {
           : "opacity-0 pointer-events-none"
       } transition-opacity duration-300`}
     >
-      {/* Overlay */}
       <div
         className="fixed inset-0 bg-black bg-opacity-50"
         onClick={onClose}
       ></div>
 
-      {/* Modal */}
       <div className="relative max-h-[95vh] w-full max-w-2xl overflow-y-auto p-6 rounded-lg bg-white dark:bg-gray-800">
-        {/* Close Button */}
         <div className="space-y-4 mx-2">
           <h1 className="text-4xl font-semibold text-gray-500 whitespace-nowrap">
             {guitar ? "Edit Guitar" : "Add Guitar"}

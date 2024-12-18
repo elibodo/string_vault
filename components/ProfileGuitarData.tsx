@@ -36,13 +36,11 @@ const ProfileGuitarData = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [guitarToEdit, setGuitarToEdit] = useState<Guitar | null>(null);
 
-  // Function to open the modal and set the guitar data
   const handleOpenEditModal = (guitar: Guitar) => {
-    setGuitarToEdit(guitar); // Set the full guitar object
+    setGuitarToEdit(guitar);
     setIsEditModalOpen(true);
   };
 
-  // Function to close the modal
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
     setGuitarToEdit(null);
@@ -125,7 +123,7 @@ const ProfileGuitarData = () => {
   const handleConfirmDelete = () => {
     if (guitarToDelete) {
       handleDelete(guitarToDelete.guitarId, guitarToDelete.imageUrl);
-      setIsDeleteModalOpen(false); // Close the modal after confirming
+      setIsDeleteModalOpen(false);
     }
   };
 

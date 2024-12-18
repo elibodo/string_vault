@@ -10,7 +10,6 @@ import { useAuth } from "@/hooks/useAuth";
 export default function NavBar() {
   const { toggleTheme, theme } = useTheme();
   const { session } = useAuth();
-  // can add loading to the useauth definition
 
   return (
     <nav className="pt-1 px-3 pb-3 flex justify-between items-center border-b-2 mb-5">

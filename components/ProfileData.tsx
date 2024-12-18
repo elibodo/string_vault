@@ -56,7 +56,6 @@ const ProfileData = () => {
     }
   }, [session]);
 
-  // Calculate stats based on the fetched guitars data
   const totalGuitars = guitars.length;
   const totalCost = guitars.reduce(
     (sum, guitar) => sum + (guitar.cost || 0),
